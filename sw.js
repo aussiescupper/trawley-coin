@@ -2,7 +2,7 @@
 // App shell is cached so both apps open instantly (and offline once visited).
 // Firestore/Google API traffic is never intercepted — live sync stays live.
 
-const CACHE = 'trawley-coin-v4';
+const CACHE = 'trawley-coin-v5';
 
 // Resolve against the SW's own scope so the app works from any subfolder
 // (e.g. GitHub Pages at /trawley-coin/), not just a domain root.
