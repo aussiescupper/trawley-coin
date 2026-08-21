@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Trawley Coins</title>
+  <meta name="description" content="Do chores, earn Trawley Coins!">
+  <meta name="theme-color" content="#f59e0b">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="../icons/kid.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../icons/kid-180.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Trawley Coins">
+  <link rel="stylesheet" href="../shared/style.css">
+</head>
+<body class="theme-kid">
+
+  <div class="app">
+    <header class="app-header">
+      <div class="logo">🪙</div>
+      <div>
+        <h1 id="hi">Trawley Coins</h1>
+        <div class="sub" id="sub">Do chores, earn coins!</div>
+      </div>
+      <div class="spacer"></div>
+      <span class="mode-pill" id="mode-pill">demo</span>
+    </header>
+
+    <div class="card balance-card">
+      <div class="balance-label">Your Trawley Coins</div>
+      <div class="balance-row">
+        <svg class="coin" id="big-coin" viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="30" fill="#f5a623" stroke="#c77f0a" stroke-width="3"/>
+          <circle cx="32" cy="32" r="22" fill="none" stroke="#c77f0a" stroke-width="2" opacity=".5"/>
+          <text x="32" y="34" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="800" fill="#8a5a06">T</text>
+        </svg>
+        <div class="balance-num" id="balance">0</div>
+      </div>
+    </div>
+
+    <div class="section-title">Did a chore? Tap it!</div>
+    <div class="chore-grid" id="chores"></div>
+
+    <div class="section-title">Did something else?</div>
+    <div class="card">
+      <label class="field">
+        <span class="lbl">Tell your parent what you did</span>
+        <input type="text" id="custom-msg" maxlength="140" placeholder="I washed the car!" autocomplete="off">
+      </label>
+      <button class="btn block" id="send-custom">Send it! 📨</button>
+    </div>
+
+    <div class="section-title">My messages</div>
+    <div class="card" id="requests"></div>
+
+    <div class="section-title">Coin history</div>
+    <div class="card" id="history"></div>
+  </div>
+
+  <!-- Connection problem (live mode) -->
+  <div class="gate" id="conn-gate" hidden>
+    <div class="card">
+      <div class="logo">📡</div>
+      <h2>Can't connect</h2>
+      <p>The family coin bank couldn't be reached. Check the internet connection, then try again.</p>
+      <button class="btn block" onclick="location.reload()">Try again</button>
+    </div>
+  </div>
+
+  <!-- First-load spinner (live mode) -->
+  <div class="gate" id="loading-gate" hidden>
+    <div class="card">
+      <div class="logo">🪙</div>
+      <h2>Connecting…</h2>
+      <p>Fetching your family's coins.</p>
+    </div>
+  </div>
+
+  <!-- Family-code screen (only shown in live Firebase mode before joining) -->
+  <div class="gate" id="join-gate" hidden>
+    <div class="card">
+      <div class="logo">🪙</div>
+      <h2>Join your family</h2>
+      <p>Ask your parent for the 6-letter family code from their Trawley Coin app.</p>
+      <input type="text" id="join-code" maxlength="6" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="ABC123">
+      <p class="err" id="join-err"></p>
+      <button class="btn block" id="join-btn" style="margin-top:10px">Join! 🎉</button>
+    </div>
+  </div>
+
+  <script src="../shared/config.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

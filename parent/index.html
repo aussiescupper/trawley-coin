@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Trawley Coin — Parent</title>
+  <meta name="description" content="Approve chores and manage your kid's Trawley Coins.">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="../icons/parent.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../icons/parent-180.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Trawley Parent">
+  <link rel="stylesheet" href="../shared/style.css">
+</head>
+<body>
+
+  <div class="app">
+    <header class="app-header">
+      <div class="logo">🪙</div>
+      <div>
+        <h1>Trawley Coin</h1>
+        <div class="sub" id="sub">Parent</div>
+      </div>
+      <div class="spacer"></div>
+      <span class="mode-pill" id="mode-pill">demo</span>
+    </header>
+
+    <div class="card balance-card">
+      <div class="balance-label" id="bal-label">Coin balance</div>
+      <div class="balance-row">
+        <svg class="coin" viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="30" fill="#f5a623" stroke="#c77f0a" stroke-width="3"/>
+          <circle cx="32" cy="32" r="22" fill="none" stroke="#c77f0a" stroke-width="2" opacity=".5"/>
+          <text x="32" y="34" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="800" fill="#8a5a06">T</text>
+        </svg>
+        <div class="balance-num" id="balance">0</div>
+      </div>
+    </div>
+
+    <main>
+      <section id="tab-requests"></section>
+
+      <section id="tab-chores" hidden>
+        <div class="section-title">Chores &amp; what they're worth</div>
+        <div class="card" id="chore-list"></div>
+        <button class="btn block" id="add-chore">＋ New chore</button>
+      </section>
+
+      <section id="tab-history" hidden>
+        <div class="section-title">Add or spend coins</div>
+        <div class="card">
+          <label class="field">
+            <span class="lbl">How many coins?</span>
+            <input type="number" id="adj-amount" min="1" max="10000" step="1" inputmode="numeric" placeholder="5">
+          </label>
+          <label class="field">
+            <span class="lbl">What for? (optional)</span>
+            <input type="text" id="adj-note" maxlength="80" placeholder="Bonus, pocket-money spend…" autocomplete="off">
+          </label>
+          <div class="btn-row">
+            <button class="btn danger" id="adj-spend">− Spend</button>
+            <button class="btn good" id="adj-add">＋ Add</button>
+          </div>
+        </div>
+        <div class="section-title">Coin history</div>
+        <div class="card" id="ledger"></div>
+      </section>
+
+      <section id="tab-settings" hidden>
+        <div class="section-title">Family</div>
+        <div class="card">
+          <label class="field"><span class="lbl">Kid's name</span>
+            <input id="set-kid" type="text" maxlength="40" autocomplete="off"></label>
+          <label class="field"><span class="lbl">Family name</span>
+            <input id="set-family" type="text" maxlength="40" autocomplete="off"></label>
+          <button class="btn block" id="save-settings">Save</button>
+        </div>
+
+        <div class="section-title">Parent PIN</div>
+        <div class="card">
+          <p class="sub" style="margin-top:0">A PIN stops your kid opening this parent app.</p>
+          <div class="btn-row" style="margin-top:0">
+            <button class="btn secondary" id="set-pin">Set PIN</button>
+            <button class="btn secondary" id="remove-pin" hidden>Remove PIN</button>
+          </div>
+        </div>
+
+        <div class="section-title">Sync</div>
+        <div class="card" id="sync-card"></div>
+
+        <div class="section-title">Danger zone</div>
+        <div class="card">
+          <button class="btn danger block" id="reset-data">Reset all data</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <nav class="tabbar">
+    <div class="inner">
+      <button class="tab-btn active" data-tab="requests"><span class="ico">📨</span>Requests<span class="badge" id="badge-requests" hidden></span></button>
+      <button class="tab-btn" data-tab="chores"><span class="ico">🧹</span>Chores</button>
+      <button class="tab-btn" data-tab="history"><span class="ico">📜</span>History</button>
+      <button class="tab-btn" data-tab="settings"><span class="ico">⚙️</span>Settings</button>
+    </div>
+  </nav>
+
+  <!-- Connection problem (live mode) -->
+  <div class="gate" id="conn-gate" hidden>
+    <div class="card">
+      <div class="logo">📡</div>
+      <h2>Can't connect</h2>
+      <p>The family coin bank couldn't be reached. Check the internet connection, then try again.</p>
+      <button class="btn block" onclick="location.reload()">Try again</button>
+    </div>
+  </div>
+
+  <!-- First-load spinner (live mode) -->
+  <div class="gate" id="loading-gate" hidden>
+    <div class="card">
+      <div class="logo">🪙</div>
+      <h2>Connecting…</h2>
+      <p>Fetching your family's coins.</p>
+    </div>
+  </div>
+
+  <!-- Set-up screen (live Firebase mode, before a family exists on this phone) -->
+  <div class="gate" id="setup-gate" hidden>
+    <div class="card">
+      <div class="logo">🪙</div>
+      <h2>Set up Trawley Coin</h2>
+      <p>Create your family — you'll get a code your kid types into their app to join.</p>
+      <button class="btn block" id="create-family">Create our family</button>
+      <p style="margin:16px 0 6px">Already have a code? (e.g. second parent phone)</p>
+      <input type="text" id="parent-join-code" maxlength="6" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="ABC123">
+      <p class="err" id="parent-join-err"></p>
+      <button class="btn secondary block" id="parent-join-btn" style="margin-top:10px">Join existing family</button>
+    </div>
+  </div>
+
+  <!-- PIN lock -->
+  <div class="gate" id="pin-gate" hidden>
+    <div class="card">
+      <div class="logo">🔒</div>
+      <h2>Parents only</h2>
+      <p>Enter your parent PIN.</p>
+      <input type="password" id="pin-entry" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off">
+      <p class="err" id="pin-entry-err"></p>
+      <button class="btn block" id="pin-unlock" style="margin-top:10px">Unlock</button>
+    </div>
+  </div>
+
+  <!-- Dialogs -->
+  <dialog id="dlg-approve">
+    <h2>Approve chore</h2>
+    <p class="sub" id="approve-sub"></p>
+    <label class="field"><span class="lbl">Trawley Coins to award</span>
+      <input type="number" id="approve-amount" min="0" max="10000" step="1" inputmode="numeric" placeholder="5"></label>
+    <div class="btn-row">
+      <button class="btn secondary" id="approve-cancel">Cancel</button>
+      <button class="btn good" id="approve-ok">Approve ✓</button>
+    </div>
+  </dialog>
+
+  <dialog id="dlg-chore">
+    <h2 id="chore-dlg-title">New chore</h2>
+    <label class="field"><span class="lbl">Chore name</span>
+      <input type="text" id="chore-name" maxlength="60" placeholder="Feed the dog" autocomplete="off"></label>
+    <label class="field"><span class="lbl">Emoji</span>
+      <input type="text" id="chore-emoji" maxlength="4" placeholder="🐶" autocomplete="off"></label>
+    <label class="field"><span class="lbl">Trawley Coins it's worth</span>
+      <input type="number" id="chore-coins" min="0" max="10000" step="1" inputmode="numeric" placeholder="5"></label>
+    <div class="btn-row">
+      <button class="btn secondary" id="chore-cancel">Cancel</button>
+      <button class="btn" id="chore-save">Save</button>
+    </div>
+    <button class="btn danger block" id="chore-delete" style="margin-top:10px" hidden>Delete this chore</button>
+  </dialog>
+
+  <dialog id="dlg-pin">
+    <h2>Set parent PIN</h2>
+    <p class="sub">4–8 digits. You'll type it when opening this app.</p>
+    <label class="field">
+      <input type="password" id="pin-value" inputmode="numeric" pattern="[0-9]*" maxlength="8" placeholder="••••" autocomplete="off"></label>
+    <p class="err" id="pin-err" style="color:var(--bad);font-size:13px;min-height:16px;margin:0 0 8px"></p>
+    <div class="btn-row">
+      <button class="btn secondary" id="pin-cancel">Cancel</button>
+      <button class="btn" id="pin-save">Save PIN</button>
+    </div>
+  </dialog>
+
+  <dialog id="dlg-confirm">
+    <h2 id="confirm-title"></h2>
+    <p class="sub" id="confirm-sub"></p>
+    <div class="btn-row">
+      <button class="btn secondary" id="confirm-cancel">Cancel</button>
+      <button class="btn danger" id="confirm-ok">OK</button>
+    </div>
+  </dialog>
+
+  <dialog id="dlg-family-code">
+    <h2>Family created! 🎉</h2>
+    <p class="sub">Your kid types this code into their Trawley Coins app to join:</p>
+    <div class="family-code" id="fam-code-display"></div>
+    <button class="btn block" id="fam-code-ok">Got it</button>
+  </dialog>
+
+  <script src="../shared/config.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

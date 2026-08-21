@@ -1,0 +1,29 @@
+{
+  "name": "Trawley Coin \u2014 Parent",
+  "short_name": "Trawley Parent",
+  "description": "Approve chores and manage your kid's Trawley Coins.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f5f9",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "../icons/parent-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "../icons/parent-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "../icons/parent-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
