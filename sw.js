@@ -2,7 +2,7 @@
 // App shell is cached so both apps open instantly (and offline once visited).
 // Firestore/Google API traffic is never intercepted — live sync stays live.
 
-const CACHE = 'trawley-coin-v5';
+const CACHE = 'trawley-coin-v6';
 
 // Resolve against the SW's own scope so the app works from any subfolder
 // (e.g. GitHub Pages at /trawley-coin/), not just a domain root.
@@ -46,7 +46,9 @@ self.addEventListener('install', (e) => {
 self.addEventListener('activate', (e) => {
   e.waitUntil((async () => {
     for (const key of await caches.keys()) {
-      if (key !== CACHE) await caches.delete(key);
+      // only our own stale versions — Cache Storage is origin-wide, and the
+      // sibling apps (hoop-maths, rail-runner) keep their caches here too
+      if (key.startsWith('trawley-coin-') && key !== CACHE) await caches.delete(key);
     }
     await self.clients.claim();
   })());
