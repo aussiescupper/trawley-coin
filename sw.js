@@ -2,7 +2,8 @@
 // App shell is cached so both apps open instantly (and offline once visited).
 // Firestore/Google API traffic is never intercepted — live sync stays live.
 
-const CACHE = 'trawley-coin-v6';
+importScripts('version.js');                 // single source of truth for the version
+const CACHE = 'trawley-coin-v' + self.APP_VERSION;
 
 // Resolve against the SW's own scope so the app works from any subfolder
 // (e.g. GitHub Pages at /trawley-coin/), not just a domain root.
@@ -12,6 +13,7 @@ const at = (p) => new URL(p, SCOPE).toString();
 const PRECACHE = [
   '',
   'index.html',
+  'version.js',
   'shared/style.css',
   'shared/store.js',
   'shared/config.js',

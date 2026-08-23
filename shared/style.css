@@ -466,3 +466,10 @@ dialog .sub { color: var(--ink-soft); font-size: 13.5px; margin: 0 0 14px; }
   .balance-num { font-size: 44px; }
   .chore-grid { grid-template-columns: 1fr; }
 }
+
+/* build stamp so an installed iPad can be identified at a glance */
+.app-version {
+  position: fixed; left: 0; right: 0; bottom: 4px;
+  text-align: center; font-size: 11px; opacity: 0.42;
+  pointer-events: none;
+}
